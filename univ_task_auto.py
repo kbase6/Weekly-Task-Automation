@@ -19,10 +19,11 @@ def class_register(kamoku, youbi, kadai_due_day, kadai_due_time='23:59'):
     
     property_name  = {"title": [{"text": {"content": kamoku}}]}
     property_select = {"select": {"name": "weekly"}}
+    property_youbi = {"date": {"start": (datetime.date.today()+datetime.timedelta(days=day_of_week[youbi]))}}
     if kadai_due_day == None:
-        property_date = {"date": {"start": (datetime.date.today()+datetime.timedelta(days=21)).isoformat()+" "+kadai_due_time}}
+        property_date = {"date": {"start": (datetime.date.today()+datetime.timedelta(days=0-datetime.date.today().weekday())+datetime.timedelta(days=21)).isoformat()+" "+kadai_due_time}}
     else:
-        property_date = {"date": {"start": (datetime.date.today()+datetime.timedelta(days=kadai_due_day)).isoformat()+" "+kadai_due_time}}
+        property_date = {"date": {"start": (datetime.date.today()+datetime.timedelta(days=0-datetime.date.today().weekday())+datetime.timedelta(days=kadai_due_day)).isoformat()+" "+kadai_due_time}}
 
     body = {
     "parent": {
@@ -30,14 +31,13 @@ def class_register(kamoku, youbi, kadai_due_day, kadai_due_time='23:59'):
     "properties": {
         "task name": property_name,
         "due": property_date,
-        "type": property_select
+        "type": property_select,
+        "date": property_youbi
         }
     }
     response = requests.request('POST', url=get_request_url('pages'), headers=headers, data=json.dumps(body))
     pprint(response.json())
-    print()
-    print('--------------------------------------------------------------------------------')
-    print()
+    print('\n--------------------------------------------------------------------------------\n')
 
 class_register('回路理論', 'Mon', 7, '09:00')
 class_register('プログラミングA演習', 'Mon', 3, '13:00')
